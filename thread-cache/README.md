@@ -27,7 +27,7 @@
 </br>
 使用哈希桶组织起来。
 
-    ![enter image description here](https://ckfs.oss-cn-beijing.aliyuncs.com/img/202412081716235.png)
+![enter image description here](https://ckfs.oss-cn-beijing.aliyuncs.com/img/202412081716235.png)
 
   
 3. 再次优化，减少哈希桶的数量。
