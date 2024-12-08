@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "cassert": "cpp",
+        "ostream": "cpp",
+        "*.tcc": "cpp",
+        "compare": "cpp",
+        "memory": "cpp",
+        "sstream": "cpp",
+        "type_traits": "cpp"
+    }
+}
