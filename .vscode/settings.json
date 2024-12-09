@@ -6,6 +6,7 @@
         "compare": "cpp",
         "memory": "cpp",
         "sstream": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "new": "cpp"
     }
 }

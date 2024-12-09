@@ -1,3 +1,4 @@
+#pragma once
 #include <cassert>
 #include <iostream>
 
@@ -12,23 +13,21 @@ class FreeList {
         _free_list = obj;
     }
     void* pop() {
-        if(_free_list == nullptr){
+        if (_free_list == nullptr) {
             return nullptr;
         }
         void* ret = _free_list;
         _free_list = nextObj(_free_list);
         return ret;
     }
-    bool empty(){
-        return _free_list == nullptr;
-    }
+    bool empty() { return _free_list == nullptr; }
 
    private:
     void*& nextObj(void* obj) {  // 获取内存对象的下一个对象的地址
         return *(void**)obj;
     }
 
-    void* _free_list;
+    void* _free_list = nullptr;
 };
 
 class SizeClass {
