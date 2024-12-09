@@ -75,11 +75,15 @@ class SizeClass {
     }
 
    private:
+    // static inline size_t _roundUp(size_t bytes, size_t align_num) {
+    //     if (bytes % align_num == 0) {
+    //         return bytes;
+    //     }
+    //     return bytes - bytes % align_num + align_num;
+    // }
+
     static inline size_t _roundUp(size_t bytes, size_t align_num) {
-        if (bytes % align_num == 0) {
-            return bytes;
-        }
-        return bytes - bytes % align_num + align_num;
+        return ((bytes + align_num - 1) & ~(align_num - 1));
     }
     static inline size_t _index(size_t bytes, size_t align_shift) {
         return ((bytes + (1 << align_shift) - 1) >> align_shift) - 1;
