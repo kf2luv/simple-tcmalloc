@@ -7,6 +7,7 @@
         "memory": "cpp",
         "sstream": "cpp",
         "type_traits": "cpp",
-        "new": "cpp"
+        "new": "cpp",
+        "iostream": "cpp"
     }
 }

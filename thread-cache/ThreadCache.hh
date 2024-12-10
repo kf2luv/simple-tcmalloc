@@ -1,11 +1,17 @@
 #pragma once
-#include "common.hh"
+#include "../common/common.hh"
+#include "../central-cache/CentralCache.hh"
 
 class ThreadCache {
    public:
-    void* Allocate(size_t sz);  // 分配空间
+    // 分配空间
+    void* allocate(size_t bytes);
+    // 返回空间
+    void deallocate(void* obj, size_t bytes);
 
-    void Deallocate(void* obj, size_t sz);  // 返回空间
+   private:
+    // 从CentralCache中拿到对应字节数的内存对象
+    void fetchObjFromCentralCache(size_t bytes, FreeList& free_list);
 
    private:
     FreeList _free_lists[NFREELISTS];

@@ -23,6 +23,6 @@ void alloc_test() {
 }
 
 int main() {
-    alloc_test();
+    // alloc_test();
     return 0;
 }

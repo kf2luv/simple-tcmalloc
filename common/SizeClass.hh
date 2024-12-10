@@ -1,34 +1,6 @@
 #pragma once
-#include <cassert>
 #include <iostream>
-
-static const size_t MAX_MEM_SIZE = 256 * 1024;
-static const size_t NFREELISTS = 208;
-
-class FreeList {
-   public:
-    void push(void* obj) {  // 头插
-        assert(obj != nullptr);
-        nextObj(obj) = _free_list;
-        _free_list = obj;
-    }
-    void* pop() {
-        if (_free_list == nullptr) {
-            return nullptr;
-        }
-        void* ret = _free_list;
-        _free_list = nextObj(_free_list);
-        return ret;
-    }
-    bool empty() { return _free_list == nullptr; }
-
-   private:
-    void*& nextObj(void* obj) {  // 获取内存对象的下一个对象的地址
-        return *(void**)obj;
-    }
-
-    void* _free_list = nullptr;
-};
+#include <cassert>
 
 class SizeClass {
    public:
@@ -73,14 +45,20 @@ class SizeClass {
         }
     }
 
-   private:
-    // static inline size_t _roundUp(size_t bytes, size_t align_num) {
-    //     if (bytes % align_num == 0) {
-    //         return bytes;
-    //     }
-    //     return bytes - bytes % align_num + align_num;
-    // }
+    // 计算ThreadCache从CentralCache拿取obj个数的阈值
+    static size_t fetchObjNumThreshold(size_t bytes) {
+        assert(bytes > 0);
+        size_t threshold = MAX_FETCH_NUM / bytes;  // obj小，阈值大;obj大，阈值小
 
+        if (threshold < 2) {  // 下限
+            threshold = 2;
+        } else if (threshold > 512) {  // 上限
+            threshold = 512;
+        }
+        return threshold;
+    }
+
+   private:
     static inline size_t _roundUp(size_t bytes, size_t align_num) {
         return ((bytes + align_num - 1) & ~(align_num - 1));
     }
