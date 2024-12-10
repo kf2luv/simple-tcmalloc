@@ -1,6 +1,5 @@
 #include <thread>
-
-#include "concurrentAlloc.hh"
+#include "ccAlloc.hh"
 
 void alloc_test_1() {
     for (int i = 0; i < 10; i++) {

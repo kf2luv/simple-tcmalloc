@@ -1,3 +1,9 @@
+# Simple-tcmalloc
+
+总体框架
+
+![](https://ckfs.oss-cn-beijing.aliyuncs.com/img/202412102134176.png)
+
 ## ThreadCache
 
 定长内存池的问题
@@ -44,5 +50,22 @@
        
         
           
-      
 
+---
+
+
+## CentralCache
+
+中央缓存
+
+![](https://ckfs.oss-cn-beijing.aliyuncs.com/img/202412102135650.png)
+
+设计点:
+  1. ThreadCache每次从CentralCache取走多少个内存对象？慢启动反馈调度算法。
+   ![](https://ckfs.oss-cn-beijing.aliyuncs.com/img/202412102140454.png)
+
+
+Question:
+  - 为什么要用双向链表？
+  - Span::use_count有什么用？
+  - 为什么只选一个Span去拿(不够就都取出来)，而不在多个Span中拿到想要的obj数量
