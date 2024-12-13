@@ -46,11 +46,7 @@
     |[8*1024+1,64\*1024]|1024byte对齐|freelist[128,184)|
     |[64*1024+1,256\*1024]|  8192byte对齐|freelist[184,208)|
 
-            
        
-        
-          
-
 ---
 
 
@@ -66,6 +62,22 @@
 
 
 Question:
-  - 为什么要用双向链表？
-  - Span::use_count有什么用？
+  - 为什么要用双向链表？方便erase
+  - Span::use_count有什么用？ 内存释放逻辑使用
   - 为什么只选一个Span去拿(不够就都取出来)，而不在多个Span中拿到想要的obj数量
+
+---
+
+## PageCache
+
+页缓存
+
+![](https://ckfs.oss-cn-beijing.aliyuncs.com/img/202412131851281.png)
+
+设计点：
+1. 对应页大小的span为空时，查找更大页的biggerSpan，用biggerSpan切分成两份，一份返回，一份挂载到对应位置。
+2. 因此，一个线程访问`Page Cache`时，可能会访问多个桶，所以不能用桶锁，必须用整体锁。
+
+TODO:
+1. 向系统申请内存空间（对“分页”的理解）
+2. PageCache和CentralCache之间的加解锁逻辑

@@ -11,8 +11,8 @@ class ThreadCache {
 
    private:
     // 从CentralCache中拿到对应字节数的内存对象
-    void fetchObjFromCentralCache(size_t bytes, FreeList& free_list);
+    void fetchObjFromCentralCache(size_t bytes, FreeList& freeList);
 
    private:
-    FreeList _free_lists[NFREELISTS];
+    FreeList _freeLists[NFREELISTS];
 };

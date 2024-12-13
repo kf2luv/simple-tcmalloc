@@ -1,4 +1,4 @@
-test: test.cc thread-cache/ThreadCache.cc central-cache/CentralCache.cc
+test: test.cc thread-cache/ThreadCache.cc central-cache/CentralCache.cc page-cache/PageCache.cc
 	g++ -o $@ $^ -lpthread
 
 .PHONY:
