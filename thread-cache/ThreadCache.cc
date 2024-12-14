@@ -1,5 +1,7 @@
 #include "ThreadCache.hh"
 
+using namespace cc_memory_pool;
+
 void *ThreadCache::allocate(size_t bytes)
 {
     assert(bytes > 0);

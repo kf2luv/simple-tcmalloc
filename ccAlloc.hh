@@ -1,18 +1,21 @@
 #pragma once
 #include "thread-cache/ThreadCache.hh"
-#include <thread>
 
+namespace cc_memory_pool
+{
+    thread_local ThreadCache *pTLSThreadCache = nullptr;
 
-thread_local ThreadCache* pTLSThreadCache = nullptr;
-
-void* ccAlloc(size_t size){
-    if(pTLSThreadCache == nullptr){
-        pTLSThreadCache = new ThreadCache;
+    void *ccAlloc(size_t size)
+    {
+        if (pTLSThreadCache == nullptr)
+        {
+            pTLSThreadCache = new ThreadCache;
+        }
+        // std::cout << std::this_thread::get_id() << ": " << pTLSThreadCache << std::endl;
+        return pTLSThreadCache->allocate(size);
     }
-    std::cout << std::this_thread::get_id() << ": " << pTLSThreadCache << std::endl;
-    return pTLSThreadCache->allocate(size);
-}
 
-void ccFree(void* obj){
-    
+    void ccFree(void *obj)
+    {
+    }
 }

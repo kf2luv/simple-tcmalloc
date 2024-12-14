@@ -1,5 +1,7 @@
 #include "CentralCache.hh"
 
+using namespace cc_memory_pool;
+
 CentralCache *CentralCache::getInstance() { return &_instance; }
 
 CentralCache CentralCache::_instance;
@@ -21,7 +23,7 @@ Span *CentralCache::getOneEffectiveSpan(SpanList &spanList, size_t bytes)
 
     // 新的span给多少页合适？
     size_t npage = SizeClass::numFetchPage(bytes);
-
+    std::cout << "npage: " << npage << std::endl;
     Span *span = PageCache::getInstance()->newSpan(npage);
 
     // 对span分配到的大块内存进行切分，每一块的大小为bytes
@@ -48,7 +50,7 @@ size_t CentralCache::getRangeObj(void *begin, void *end, size_t fetchNum, size_t
     size_t idx = SizeClass::index(bytes);
 
     // 从span_list获取fetchNum个内存对象
-    std::unique_lock<std::mutex> lockguard(_spanLists[idx].getMutex());
+    // std::unique_lock<std::mutex> lockguard(_spanLists[idx].getMutex());
 
     // 获取一个有效的Span
     Span *effectiveSpan = getOneEffectiveSpan(_spanLists[idx], bytes);
