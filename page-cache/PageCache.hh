@@ -11,6 +11,10 @@ namespace cc_memory_pool
 		// 根据指定的页数，创建一个新的span
 		Span* newSpan(size_t npage);
 
+		std::mutex& getMutex(){
+			return _mtx;
+		}
+
 	private:
 		PageCache() {}
 		PageCache(const PageCache& other) = delete;

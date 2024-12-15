@@ -11,7 +11,9 @@ void alloc_test_1()
 {
     for (int i = 0; i < 10; i++)
     {
-        void *ptr = cc_memory_pool::ccAlloc(5);
+        int *ptr = (int*)cc_memory_pool::ccAlloc(4);
+        *ptr = i + 1;
+        printf("thread1-%p: %d\n", ptr, *ptr);
     }
 }
 
@@ -19,7 +21,9 @@ void alloc_test_2()
 {
     for (int i = 0; i < 10; i++)
     {
-        void *ptr = cc_memory_pool::ccAlloc(8);
+        int *ptr = (int*)cc_memory_pool::ccAlloc(4);
+        *ptr = i + 1;
+        printf("thread2-%p: %d\n", ptr, *ptr);
     }
 }
 
@@ -52,7 +56,9 @@ void alloc_test1()
 
 int main()
 {
-    std::cout << "Page size: " << getpagesize() << " bytes" << std::endl;
-    alloc_test1();
+    // std::cout << "Page size: " << getpagesize() << " bytes" << std::endl;
+    // alloc_test1();
+
+    alloc_test();
     return 0;
 }
