@@ -1,5 +1,11 @@
 #include <thread>
+#include <unistd.h>
 #include "ccAlloc.hh"
+
+struct TestType
+{
+    int arr[100];
+};
 
 void alloc_test_1()
 {
@@ -26,6 +32,7 @@ void alloc_test()
     t2.join();
 }
 
+
 void alloc_test1()
 {
     for (int i = 0; i < 10; i++)
@@ -34,10 +41,18 @@ void alloc_test1()
         *ptr = i + 1;
         printf("%p: %d\n", ptr, *ptr);
     }
+
+    for (int i = 0; i < 10; i++)
+    {
+        TestType *ptr = (TestType *)cc_memory_pool::ccAlloc(sizeof(TestType));
+        *ptr = TestType();
+        printf("%p\n", ptr);
+    }
 }
 
 int main()
 {
+    std::cout << "Page size: " << getpagesize() << " bytes" << std::endl;
     alloc_test1();
     return 0;
 }

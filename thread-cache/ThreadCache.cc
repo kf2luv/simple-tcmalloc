@@ -1,14 +1,12 @@
 #include "ThreadCache.hh"
 
-using namespace cc_memory_pool;
-
-void *ThreadCache::allocate(size_t bytes)
+void* cc_memory_pool::ThreadCache::allocate(size_t bytes)
 {
     assert(bytes > 0);
 
     // 根据对齐策略，选择对应的free_list
     size_t idx = SizeClass::index(bytes);
-    FreeList &freeList = _freeLists[idx];
+    FreeList& freeList = _freeLists[idx];
 
     if (freeList.empty())
     {
@@ -18,14 +16,14 @@ void *ThreadCache::allocate(size_t bytes)
     return freeList.pop();
 }
 
-void ThreadCache::deallocate(void *obj, size_t bytes)
+void cc_memory_pool::ThreadCache::deallocate(void* obj, size_t bytes)
 {
     assert(obj != nullptr);
     assert(bytes > 0);
 
     // 根据对齐策略，选择对应的free_list
     size_t idx = SizeClass::index(bytes);
-    FreeList &free_list = _freeLists[idx];
+    FreeList& free_list = _freeLists[idx];
 
     free_list.push(obj);
 }
@@ -34,7 +32,7 @@ void ThreadCache::deallocate(void *obj, size_t bytes)
 // bytes: 欲获取的内存对象的大小
 // free_list：获取到的内存对象，统一放到这里面
 
-void ThreadCache::fetchObjFromCentralCache(size_t bytes, FreeList &freeList)
+void cc_memory_pool::ThreadCache::fetchObjFromCentralCache(size_t bytes, FreeList& freeList)
 {
     // 一次从CentralCache拿多少个obj?
     // 太少，频繁去拿，锁竞争问题
@@ -54,8 +52,8 @@ void ThreadCache::fetchObjFromCentralCache(size_t bytes, FreeList &freeList)
         fetchNum = threshold;
     }
     // 获取CentralCache对象
-    void *begin = nullptr;
-    void *end = nullptr;
+    void* begin = nullptr;
+    void* end = nullptr;
 
     size_t actualNum = CentralCache::getInstance()->getRangeObj(begin, end, fetchNum, bytes);
     assert(actualNum > 0);

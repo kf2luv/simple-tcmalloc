@@ -72,12 +72,20 @@ Question:
 
 页缓存
 
-![](https://ckfs.oss-cn-beijing.aliyuncs.com/img/202412131851281.png)
+![](https://ckfs.oss-cn-beijing.aliyuncs.com/img/202412151524208.png)
 
 设计点：
 1. 对应页大小的span为空时，查找更大页的biggerSpan，用biggerSpan切分成两份，一份返回，一份挂载到对应位置。
 2. 因此，一个线程访问`Page Cache`时，可能会访问多个桶，所以不能用桶锁，必须用整体锁。
+3. 向上层提供一个足量的Span对象，上层CentralCache收到后，对其进行切片，使其变长多个对应大小的小块内存对象obj
+   ![](https://ckfs.oss-cn-beijing.aliyuncs.com/img/202412151533425.png)
+   注意：系统分配的大块内存，不一定能切成整数个指定大小的小块内存对象。
 
-TODO:
-1. ~~向系统申请内存空间（对“分页”的理解）~~
+   使用vs debug观测“大切小”的结果，此处每块小内存对象是`8byte`
+   ![](https://ckfs.oss-cn-beijing.aliyuncs.com/img/202412151545747.png)
+
+Hints:
+1. 向系统申请内存空间（对“分页”的理解）
+   > 经过实测，Linux系统和Windows系统使用系统调用函数（mmap/VirtualAlloc）都是以页为单位开辟空间，返回的是某一页的起始空间。页的默认大小是`4096byte`。
+
 2. PageCache和CentralCache之间的加解锁逻辑
