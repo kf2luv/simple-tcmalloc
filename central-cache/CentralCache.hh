@@ -17,6 +17,9 @@ namespace cc_memory_pool
         // 从指定spanList中，获取一个有效的span
         Span* getOneEffectiveSpan(SpanList& spanList, size_t bytes);
 
+        // 从freeList中归还部分内存对象给CentralCache
+        void releaseObjToCentralCache(FreeList& freeList, size_t bytes);
+
     private:
         CentralCache() {}
         CentralCache(const CentralCache& other) = delete;

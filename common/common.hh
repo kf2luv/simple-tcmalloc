@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cassert>
 #include <mutex>
+#include <unordered_map>
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
@@ -26,7 +27,6 @@ namespace cc_memory_pool
 	// 规定一页4KB (4KB = 2^12B)
 	static const size_t PAGE_SHIFT = 12;
 
-//定义64位环境下和32位环境下的页号类型（不同环境分页数量不同）
 #if (defined(_WIN64) && defined(_WIN32)) || defined(__x86_64__) || defined(__ppc64__)
 	typedef unsigned long long PageID;
 #elif defined(_WIN32) || defined(__i386__) || defined(__ppc__)
@@ -87,21 +87,25 @@ namespace cc_memory_pool
 		FreeList(void* head = nullptr);
 
 		void push(void* obj);
-		void pushRange(void* begin, void* end);
+		void pushRange(void* begin, void* end, size_t n);
 
 		void* pop();
-		size_t popNum(void*& begin, void*& end, size_t n);
+		size_t popRange(void*& begin, void*& end, size_t n);
 
 		size_t& maxFetchNum();
 		bool empty();
 
 		//获得自由链表的头指针
 		void*& head();
-	public:
+
+		size_t size();
+
 		static void*& nextObj(void* obj);
+
 	private:
-		void* _freeList;
-		size_t _maxFetchNum;
+		void* _freeList = nullptr;
+		size_t _size = 0;		//free链表的节点个数
+		size_t _maxFetchNum = 0;//最大获取个数（即能从该free链表获取到的最大obj个数）
 	};
 
 	struct Span
@@ -114,6 +118,8 @@ namespace cc_memory_pool
 
 		int _useCount = 0;  // 被使用的内存对象数
 		FreeList _freeList; // 存放内存对象的free链表
+
+		bool _isUsing = false;//是否正在被使用
 	};
 	// 管理Span结构体的桶 (带头双向链表)
 	class SpanList

@@ -9,19 +9,25 @@ void*& cc_memory_pool::FreeList::head() {
 	return _freeList;
 }
 
+//头插
 void cc_memory_pool::FreeList::push(void* obj)
-{ // 头插
+{
 	assert(obj != nullptr);
 	nextObj(obj) = _freeList;
 	_freeList = obj;
+
+	_size++;
 }
-void cc_memory_pool::FreeList::pushRange(void* begin, void* end)
+void cc_memory_pool::FreeList::pushRange(void* begin, void* end, size_t pushNum)//左闭右闭
 {
 	assert(begin && end);
 	nextObj(end) = _freeList;
 	_freeList = begin;
+
+	_size += pushNum;
 }
 
+//头删
 void* cc_memory_pool::FreeList::pop()
 {
 	if (_freeList == nullptr)
@@ -30,15 +36,16 @@ void* cc_memory_pool::FreeList::pop()
 	}
 	void* ret = _freeList;
 	_freeList = nextObj(_freeList);
+	_size--;
 	return ret;
 }
-
-size_t cc_memory_pool::FreeList::popNum(void*& begin, void*& end, size_t fetchNum)
+//返回的链表，end的下一个节点是null
+size_t cc_memory_pool::FreeList::popRange(void*& begin, void*& end, size_t popNum)//左闭右闭
 { 
 	// pop n个节点，如果不够，就全部pop出去
 	void* cur = head();
 	int cnt = 1;
-	while (nextObj(cur) != nullptr && cnt < fetchNum)
+	while (nextObj(cur) != nullptr && cnt < popNum)
 	{
 		cur = nextObj(cur);
 		cnt++;
@@ -50,6 +57,7 @@ size_t cc_memory_pool::FreeList::popNum(void*& begin, void*& end, size_t fetchNu
 	nextObj(cur) = nullptr;
 	end = cur;
 
+	_size -= cnt;
 	return cnt;
 }
 
@@ -67,4 +75,9 @@ bool cc_memory_pool::FreeList::empty()
 void*& cc_memory_pool::FreeList::nextObj(void* obj)
 { // 获取内存对象的下一个对象的地址
 	return *(void**)obj;
+}
+
+size_t cc_memory_pool::FreeList::size()
+{
+	return _size;
 }
